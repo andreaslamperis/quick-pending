@@ -1,0 +1,65 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Quick Pending",
+  "version": "0.1.0",
+  "identifier": "com.quickpending.app",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "Quick Pending",
+        "width": 460,
+        "height": 520,
+        "minWidth": 320,
+        "minHeight": 240,
+        "visible": false,
+        "backgroundColor": "#141415",
+        "theme": "Dark"
+      },
+      {
+        "label": "capture",
+        "title": "Quick Capture",
+        "width": 600,
+        "height": 52,
+        "visible": false,
+        "decorations": false,
+        "resizable": false,
+        "maximizable": false,
+        "minimizable": false,
+        "alwaysOnTop": true,
+        "skipTaskbar": true,
+        "shadow": true,
+        "backgroundColor": "#1c1c1e",
+        "theme": "Dark"
+      },
+      {
+        "label": "palette",
+        "title": "Pending List",
+        "width": 560,
+        "height": 380,
+        "visible": false,
+        "decorations": false,
+        "resizable": false,
+        "maximizable": false,
+        "minimizable": false,
+        "alwaysOnTop": true,
+        "skipTaskbar": true,
+        "shadow": true,
+        "backgroundColor": "#141415",
+        "theme": "Dark"
+      }
+    ],
+    "security": { "csp": null }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": ["icons/32x32.png", "icons/128x128.png", "icons/128x128@2x.png", "icons/icon.icns", "icons/icon.ico"]
+  }
+}
