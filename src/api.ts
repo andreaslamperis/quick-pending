@@ -1,6 +1,6 @@
 // Typed wrappers around the Rust commands (src-tauri/src/commands.rs, settings.rs).
 import { invoke } from "@tauri-apps/api/core";
-import type { Pending, Settings, ShortcutInfo, Theme } from "./types";
+import type { Pending, Settings, ShortcutAction, ShortcutInfo, Theme } from "./types";
 
 export const listActive = () => invoke<Pending[]>("list_active");
 export const listCompleted = () => invoke<Pending[]>("list_completed");
@@ -15,6 +15,12 @@ export const snoozePending = (id: string, until: string) =>
 
 export const getSettings = () => invoke<Settings>("get_settings");
 export const getShortcuts = () => invoke<ShortcutInfo[]>("get_shortcuts");
+/** `keys` null removes the shortcut. Rejects with a user-facing message. */
+export const setShortcut = (action: ShortcutAction, keys: string | null) =>
+  invoke<void>("set_shortcut", { action, keys });
+/** While recording a new shortcut, so existing ones don't fire. */
+export const pauseShortcuts = () => invoke<void>("pause_shortcuts");
+export const resumeShortcuts = () => invoke<void>("resume_shortcuts");
 export const setLaunchAtStartup = (enabled: boolean) =>
   invoke<void>("set_launch_at_startup", { enabled });
 export const setTheme = (theme: Theme) => invoke<void>("set_theme", { theme });

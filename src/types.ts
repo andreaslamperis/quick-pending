@@ -21,9 +21,14 @@ export interface Settings {
   theme: Theme;
 }
 
+export type ShortcutAction = "capture" | "main" | "palette";
+
 export interface ShortcutInfo {
-  panel: "capture" | "palette";
-  keys: string;
-  /** False when another app already owns the key combination. */
+  action: ShortcutAction;
+  name: string;
+  /** e.g. "Ctrl+Alt+Z"; null when the action has no shortcut. */
+  keys: string | null;
+  defaultKeys: string | null;
+  /** False when the keys are set but another app already owns them. */
   registered: boolean;
 }

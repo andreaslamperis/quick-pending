@@ -27,9 +27,14 @@ always one keystroke away.
 
 ## Shortcuts
 
-| Shortcut | Action |
+Global shortcuts work from any app. Change them in **Settings → Shortcuts**: click
+**Change** and press the combination you want. Each needs `Ctrl`, `Alt` or `Win`
+plus a key, and any of them can be cleared.
+
+| Default | Action |
 | --- | --- |
-| `Ctrl+Shift+Space` (`Cmd+Shift+Space` on macOS) | Quick Capture |
+| `Ctrl+Shift+Space` (`Cmd+Shift+Space` on macOS) | Capture Pending |
+| not set | Open Pendings (main window; press again to hide it) |
 | `Ctrl+Alt+P` (`Cmd+Option+P` on macOS) | Pending List |
 
 In the Pending List:
@@ -44,7 +49,8 @@ In the Pending List:
 | `N` | New pending |
 | `Esc` | Close |
 
-The tray menu has Capture Pending, Open Pendings, History, Settings and Quit.
+In the tray, **double-click** the icon to open the main window, or **right-click**
+it for Capture Pending, Open Pendings, History, Settings and Quit.
 
 ## Install (Windows)
 
@@ -92,8 +98,9 @@ src/                     React UI (one bundle, three windows)
 src-tauri/src/
   db.rs                  all SQLite access, with unit tests
   commands.rs            Tauri commands for pendings
-  panels.rs              floating windows and their global shortcuts
+  panels.rs              floating windows (capture bar, palette)
   tray.rs                tray icon and menu
+  shortcuts.rs           customizable global shortcuts
   settings.rs            launch at startup, theme
 ```
 

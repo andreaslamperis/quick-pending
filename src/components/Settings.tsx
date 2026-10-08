@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as api from "../api";
-import type { Settings as SettingsData, ShortcutInfo, Theme } from "../types";
+import type { Settings as SettingsData, ShortcutAction, Theme } from "../types";
 import { useErrorNote } from "../useErrorNote";
 import { useShortcuts } from "../useShortcuts";
-import Keys from "./Keys";
+import ShortcutField from "./ShortcutField";
 
 const THEMES: { value: Theme; label: string }[] = [
   { value: "system", label: "System" },
@@ -11,16 +11,17 @@ const THEMES: { value: Theme; label: string }[] = [
   { value: "dark", label: "Dark" },
 ];
 
-const SHORTCUT_NAMES: Record<ShortcutInfo["panel"], string> = {
-  capture: "Quick Capture",
-  palette: "Pending List",
-};
-
 export default function Settings() {
   const [settings, setSettings] = useState<SettingsData | null>(null);
   const [failed, setFailed] = useState(false);
-  const shortcuts = useShortcuts();
+  const { shortcuts, reload: reloadShortcuts } = useShortcuts();
+  const [recording, setRecording] = useState<ShortcutAction | null>(null);
   const { error, attempt } = useErrorNote();
+
+  // Leaving the Settings tab mid-recording must turn shortcuts back on.
+  const recordingRef = useRef(recording);
+  recordingRef.current = recording;
+  useEffect(() => () => void (recordingRef.current && api.resumeShortcuts()), []);
 
   useEffect(() => {
     api.getSettings().then(setSettings, (err) => {
@@ -62,16 +63,20 @@ export default function Settings() {
           ))}
         </div>
       </div>
+      <h2 className="settings-heading">Shortcuts</h2>
       {shortcuts.map((s) => (
-        <div key={s.panel} className="setting">
-          <span>{SHORTCUT_NAMES[s.panel]}</span>
-          <span className="setting-value">
-            {!s.registered && <span className="setting-warning">In use by another app</span>}
-            <Keys shortcut={s.keys} />
-          </span>
-        </div>
+        <ShortcutField
+          key={s.action}
+          info={s}
+          recording={recording === s.action}
+          onRecordingChange={(on) => setRecording(on ? s.action : null)}
+          onChange={reloadShortcuts}
+        />
       ))}
-      <p className="settings-note">Quick Pending keeps running in the tray. Quit it from the tray menu.</p>
+      <p className="settings-note">
+        Shortcuts work from any app and need Ctrl, Alt or Win. Quick Pending keeps running in the tray: double-click
+        its icon to open this window, right-click for the menu.
+      </p>
       {error && (
         <p className="notice" role="alert">
           {error}

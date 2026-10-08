@@ -4,10 +4,8 @@ use rusqlite::Connection;
 use serde::Serialize;
 use tauri::{AppHandle, Manager, State, Theme};
 use tauri_plugin_autostart::ManagerExt;
-use tauri_plugin_global_shortcut::GlobalShortcutExt;
 
 use crate::db::{self, Db};
-use crate::panels;
 
 /// Stored as "true"/"false"; missing means the default, on.
 const LAUNCH_AT_STARTUP: &str = "launch_at_startup";
@@ -20,15 +18,6 @@ const THEMES: [&str; 3] = ["system", "light", "dark"];
 pub struct Settings {
     launch_at_startup: bool,
     theme: String,
-}
-
-#[derive(Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct ShortcutInfo {
-    panel: &'static str,
-    keys: &'static str,
-    /// False when another app already owns the key combination.
-    registered: bool,
 }
 
 /// Makes the OS login item match the saved preference. Run on every launch of an
@@ -68,18 +57,6 @@ pub fn get_settings(app: AppHandle, db: State<Db>) -> db::Result<Settings> {
         launch_at_startup: app.autolaunch().is_enabled().map_err(|e| e.to_string())?,
         theme: saved_theme(&db.lock().unwrap()),
     })
-}
-
-#[tauri::command]
-pub fn get_shortcuts(app: AppHandle) -> Vec<ShortcutInfo> {
-    panels::SHORTCUTS
-        .iter()
-        .map(|&(panel, keys)| ShortcutInfo {
-            panel,
-            keys,
-            registered: app.global_shortcut().is_registered(keys),
-        })
-        .collect()
 }
 
 #[tauri::command(async)]

@@ -1,10 +1,10 @@
-//! Floating panels summoned by global shortcuts: Quick Capture and the Pending List palette.
+//! Floating panels summoned by global shortcuts (see shortcuts.rs): Quick Capture and
+//! the Pending List palette.
 //!
 //! Both windows are created hidden at startup (see tauri.conf.json) and only shown/hidden
 //! here, so opening them is instantaneous.
 
 use tauri::{AppHandle, Manager, PhysicalPosition, State, WebviewWindow};
-use tauri_plugin_global_shortcut::Shortcut;
 
 use crate::commands::notify_changed;
 use crate::db::{self, Db};
@@ -12,25 +12,11 @@ use crate::db::{self, Db};
 pub const CAPTURE: &str = "capture";
 pub const PALETTE: &str = "palette";
 
-pub const CAPTURE_SHORTCUT: &str = "CommandOrControl+Shift+Space";
-pub const PALETTE_SHORTCUT: &str = "CommandOrControl+Alt+P";
-
-/// Each panel and the shortcut that toggles it.
-pub const SHORTCUTS: [(&str, &str); 2] = [(CAPTURE, CAPTURE_SHORTCUT), (PALETTE, PALETTE_SHORTCUT)];
-
 /// Vertical position of a panel's top edge, as a fraction of the screen height.
 const TOP_OFFSET: f64 = 0.2;
 
 pub fn is_panel(label: &str) -> bool {
     label == CAPTURE || label == PALETTE
-}
-
-/// The panel a pressed shortcut belongs to.
-pub fn for_shortcut(shortcut: &Shortcut) -> Option<&'static str> {
-    SHORTCUTS
-        .iter()
-        .find(|(_, keys)| keys.parse::<Shortcut>().is_ok_and(|s| &s == shortcut))
-        .map(|(label, _)| *label)
 }
 
 pub fn toggle(app: &AppHandle, label: &str) {

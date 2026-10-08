@@ -2,12 +2,13 @@ mod commands;
 mod db;
 mod panels;
 mod settings;
+mod shortcuts;
 mod tray;
 
 use std::sync::Mutex;
 
 use tauri::{Manager, WindowEvent};
-use tauri_plugin_global_shortcut::{GlobalShortcutExt, ShortcutState};
+use tauri_plugin_global_shortcut::ShortcutState;
 
 /// Passed when the OS launches the app at login, so it starts quietly in the tray.
 const AUTOSTART_ARG: &str = "--autostart";
@@ -24,9 +25,7 @@ pub fn run() {
             tauri_plugin_global_shortcut::Builder::new()
                 .with_handler(|app, shortcut, event| {
                     if event.state == ShortcutState::Pressed {
-                        if let Some(label) = panels::for_shortcut(shortcut) {
-                            panels::toggle(app, label);
-                        }
+                        shortcuts::trigger(app, shortcut);
                     }
                 })
                 .build(),
@@ -48,14 +47,13 @@ pub fn run() {
                 }
             }
             settings::apply_theme(app.handle(), &settings::saved_theme(&conn));
-            app.manage(Mutex::new(conn));
 
-            // A shortcut taken by another app shouldn't stop Quick Pending from starting.
-            for (_, keys) in panels::SHORTCUTS {
-                if let Err(err) = app.global_shortcut().register(keys) {
-                    eprintln!("failed to register {keys}: {err}");
-                }
-            }
+            // A shortcut taken by another app shouldn't stop Quick Pending from starting;
+            // Settings shows which ones failed.
+            let assigned = shortcuts::load(&conn);
+            shortcuts::register_all(app.handle(), &assigned);
+            app.manage::<shortcuts::Assigned>(Mutex::new(assigned));
+            app.manage(Mutex::new(conn));
 
             tray::create(app)?;
             if !std::env::args().any(|arg| arg == AUTOSTART_ARG) {
@@ -89,7 +87,10 @@ pub fn run() {
             commands::delete_pending,
             commands::snooze_pending,
             settings::get_settings,
-            settings::get_shortcuts,
+            shortcuts::get_shortcuts,
+            shortcuts::set_shortcut,
+            shortcuts::pause_shortcuts,
+            shortcuts::resume_shortcuts,
             settings::set_launch_at_startup,
             settings::set_theme,
         ])
