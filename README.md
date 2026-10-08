@@ -10,6 +10,8 @@ always one keystroke away.
 
 **[Download for Windows](https://github.com/andreaslamperis/quick-pending/releases/latest)**
 
+![The Pending List palette, opened with Ctrl+Alt+P](docs/pending-list.png)
+
 ## Features
 
 - **Quick Capture**: a small floating input opened by a global shortcut. Enter
