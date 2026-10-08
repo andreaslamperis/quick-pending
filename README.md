@@ -8,6 +8,8 @@ Press a shortcut from any app, type, hit Enter, and you're back where you were.
 Quick Pending lives in the system tray and starts with your computer, so it's
 always one keystroke away.
 
+**[Download for Windows](https://github.com/andreaslamperis/quick-pending/releases/latest)**
+
 ## Features
 
 - **Quick Capture**: a small floating input opened by a global shortcut. Enter
@@ -44,9 +46,10 @@ The tray menu has Capture Pending, Open Pendings, History, Settings and Quit.
 
 ## Install (Windows)
 
-Build the installer (see below) and run
-`src-tauri/target/release/bundle/nsis/Quick Pending_<version>_x64-setup.exe`.
-It installs per user, so it doesn't need admin rights.
+Download the installer (`Quick-Pending_<version>_x64-setup.exe`) from the
+**[latest release](https://github.com/andreaslamperis/quick-pending/releases/latest)**
+and run it. It installs per user, so it doesn't need admin rights. To build the
+installer yourself, see [Development](#development).
 
 The installer isn't code-signed, so Windows SmartScreen will warn on first run:
 choose **More info → Run anyway**.
